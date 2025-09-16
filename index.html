@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joe Pharmacy - Your Trusted Healthcare Partner</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2c5aa0, #1e3a5f);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            color: #64b5f6;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page {
+            display: none;
+            min-height: 80vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page */
+        .hero {
+            background: linear-gradient(rgba(44, 90, 160, 0.8), rgba(30, 58, 95, 0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f0f8ff" width="1200" height="600"/><circle fill="%234CAF50" cx="200" cy="150" r="50" opacity="0.1"/><circle fill="%232196F3" cx="800" cy="300" r="70" opacity="0.1"/><circle fill="%23FF9800" cx="1000" cy="100" r="40" opacity="0.1"/></svg>');
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #c0392b;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #2c5aa0;
+            margin-bottom: 20px;
+        }
+
+        /* Products Page */
+        .search-bar {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #2c5aa0;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f0f8ff, #e1f5fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #2c5aa0;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .product-category {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 15px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #1e3a5f;
+        }
+
+        .add-to-cart:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .out-of-stock {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Custom Order Section */
+        .custom-order {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .custom-order h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128c7e;
+        }
+
+        /* Cart */
+        .cart-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* About Page */
+        .about-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Instructions Page */
+        .instructions {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .step-number {
+            background: #2c5aa0;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-prescription-bottle-alt"></i>
+                Joe Pharmacy
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a onclick="showPage('home')">Home</a></li>
+                    <li><a onclick="showPage('products')">Products</a></li>
+                    <li><a onclick="showPage('about')">About Us</a></li>
+                    <li><a onclick="showPage('instructions')">How to Use</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" onclick="showPage('cart')">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="container">
+                <h1>Welcome to Joe Pharmacy</h1>
+                <p>Your trusted healthcare partner providing quality medications and exceptional service for your wellbeing</p>
+                <a href="#" class="cta-button" onclick="showPage('products')">
+                    <i class="fas fa-pills"></i> Browse Products
+                </a>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Quality Assured</h3>
+                    <p>All medications are sourced from certified suppliers and stored under optimal conditions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Fast Service</h3>
+                    <p>Quick order processing and prompt delivery to ensure you get your medications when you need them</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Expert Consultation</h3>
+                    <p>Our qualified pharmacists are available to provide professional advice and medication counseling</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Easy Ordering</h3>
+                    <p>Simple online ordering process with WhatsApp integration for seamless communication</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Products Page -->
+    <div id="products" class="page">
+        <div class="container">
+            <h2 style="margin: 30px 0; text-align: center; color: #2c5aa0; font-size: 2.5rem;">Our Products</h2>
+            
+            <div class="search-bar">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search for medications..." id="searchInput">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+
+            <div class="custom-order">
+                <h3><i class="fas fa-question-circle"></i> Need something not listed here?</h3>
+                <p>Can't find what you're looking for? Contact us directly and we'll help you get the medications you need.</p>
+                <a href="#" class="whatsapp-btn" onclick="customOrderWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Contact Us on WhatsApp
+                </a>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Page -->
+    <div id="cart" class="page">
+        <div class="container">
+            <h2 style="margin: 30px 0; text-align: center; color: #2c5aa0; font-size: 2.5rem;">Your Cart</h2>
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <button class="checkout-btn" onclick="checkoutWhatsApp()" id="checkoutBtn" style="display: none;">
+                <i class="fab fa-whatsapp"></i> Checkout via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="container">
+            <h2 style="margin: 30px 0; text-align: center; color: #2c5aa0; font-size: 2.5rem;">About Joe Pharmacy</h2>
+            <div class="about-content">
+                <h3>Our Mission</h3>
+                <p>At Joe Pharmacy, we are committed to providing accessible, affordable, and high-quality pharmaceutical services to our community. We believe that healthcare should be within everyone's reach, and we strive to make your medication needs our top priority.</p>
+                
+                <h3>Why Choose Us?</h3>
+                <ul style="margin: 20px 0; padding-left: 30px; line-height: 2;">
+                    <li><strong>Licensed & Certified:</strong> We operate under strict pharmaceutical regulations and standards</li>
+                    <li><strong>Wide Selection:</strong> Extensive inventory of prescription and over-the-counter medications</li>
+                    <li><strong>Professional Staff:</strong> Qualified pharmacists with years of experience</li>
+                    <li><strong>Customer-Focused:</strong> Personalized service and medication counseling</li>
+                    <li><strong>Convenient Ordering:</strong> Easy online browsing with WhatsApp ordering system</li>
+                </ul>
+
+                <h3>Contact Information</h3>
+                <div style="margin-top: 20px;">
+                    <p><i class="fas fa-phone" style="color: #2c5aa0; margin-right: 10px;"></i> Phone: +234 XXX XXX XXXX</p>
+                    <p><i class="fas fa-envelope" style="color: #2c5aa0; margin-right: 10px;"></i> Email: info@joepharmacy.com</p>
+                    <p><i class="fas fa-map-marker-alt" style="color: #2c5aa0; margin-right: 10px;"></i> Address: [Your Address Here]</p>
+                    <p><i class="fas fa-clock" style="color: #2c5aa0; margin-right: 10px;"></i> Hours: Mon-Sat 8AM-8PM, Sun 10AM-6PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Page -->
+    <div id="instructions" class="page">
+        <div class="container">
+            <h2 style="margin: 30px 0; text-align: center; color: #2c5aa0; font-size: 2.5rem;">How to Use Our Website</h2>
+            <div class="instructions">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h4>Browse Products</h4>
+                        <p>Visit our Products page to see our extensive catalog of medications. Use the search bar to quickly find specific items you need.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h4>Add to Cart</h4>
+                        <p>Click "Add to Cart" for any medications you want to order. You can adjust quantities in your cart later.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h4>Review Your Cart</h4>
+                        <p>Click the cart icon to review your selected items. You can modify quantities or remove items as needed.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h4>Checkout via WhatsApp</h4>
+                        <p>When ready, click "Checkout via WhatsApp". This will open WhatsApp with your order details pre-filled.</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h4>Complete Your Order</h4>
+                        <p>Our pharmacy staff will provide pricing, confirm availability, and arrange payment and delivery through WhatsApp.</p>
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <h4 style="color: #2c5aa0; margin-bottom: 10px;">Important Notes:</h4>
+                    <ul style="padding-left: 20px; line-height: 1.8;">
+                        <li>Prices are not displayed online as they are subject to change</li>
+                        <li>Final pricing and availability will be confirmed via WhatsApp</li>
+                        <li>Prescription medications require valid prescriptions</li>
+                        <li>If you can't find a specific medication, use our "Contact Us" feature</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample products data - Replace with your Excel data as JSON
+        const products = [
+            { id: 1, name: 'Paracetamol 500mg', category: 'Pain Relief', inStock: true },
+            { id: 2, name: 'Amoxicillin 250mg', category: 'Antibiotics', inStock: true },
+            { id: 3, name: 'Ibuprofen 400mg', category: 'Pain Relief', inStock: true },
+            { id: 4, name: 'Cetirizine 10mg', category: 'Antihistamines', inStock: false },
+            { id: 5, name: 'Omeprazole 20mg', category: 'Antacids', inStock: true },
+            { id: 6, name: 'Metformin 500mg', category: 'Diabetes', inStock: true },
+            { id: 7, name: 'Lisinopril 10mg', category: 'Blood Pressure', inStock: true },
+            { id: 8, name: 'Simvastatin 20mg', category: 'Cholesterol', inStock: true },
+            { id: 9, name: 'Aspirin 100mg', category: 'Pain Relief', inStock: true },
+            { id: 10, name: 'Ciprofloxacin 500mg', category: 'Antibiotics', inStock: true },
+        ];
+
+        let cart = [];
+        const whatsappNumber = '2348123456789'; // Replace with actual WhatsApp number
+
+        // Show page function
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            if (pageId === 'products') {
+                loadProducts();
+            } else if (pageId === 'cart') {
+                loadCart();
+            }
+        }
+
+        // Load products
+        function loadProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-price">₦ ****</div>
+                        ${product.inStock ? 
+                            `<button class="add-to-cart" onclick="addToCart(${product.id})">
+                                <i class="fas fa-cart-plus"></i> Add to Cart
+                            </button>` :
+                            `<button class="add-to-cart out-of-stock" disabled>Out of Stock</button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', loadProducts);
+
+        // Add to cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCartCount();
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // Load cart
+        function loadCart() {
+            const cartItems = document.getElementById('cartItems');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 20px;"></i><h3>Your cart is empty</h3><p>Start shopping to add items to your cart</p></div>';
+                checkoutBtn.style.display = 'none';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div>
+                            <div class="product-name">${item.name}</div>
+                            <div class="product-category">${item.category}</div>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span style="margin: 0 10px; font-weight: bold;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="qty-btn" onclick="removeFromCart(${item.id})" style="background: #e74c3c; margin-left: 10px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                checkoutBtn.style.display = 'block';
+            }
+        }
+
+        // Update quantity
+        function updateQuantity(productId, newQuantity) {
+            if (newQuantity === 0) {
+                removeFromCart(productId);
+            } else {
+                const item = cart.find(item => item.id === productId);
+                if (item) {
+                    item.quantity = newQuantity;
+                    loadCart();
+                    updateCartCount();
+                }
+            }
+        }
+
+        // Remove from cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            loadCart();
+            updateCartCount();
+        }
+
+        // Checkout via WhatsApp
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return;
+            
+            let message = "Hi! I would like to order the following items:\n\n";
+            cart.forEach(item => {
+                message += `• ${item.name} - Quantity: ${item.quantity}\n`;
+            });
+            message += "\nPlease let me know the prices and availability. Thank you!";
+            
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Custom order WhatsApp
+        function customOrderWhatsApp() {
+            const message = "Hi! I'm looking for a medication that's not listed on your website. Can you help me find it?";
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>
